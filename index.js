@@ -1,14 +1,22 @@
 const net = require('net');
 
 const sockets = new Set();
+const messages = [
+  'ChatBott: Hello everyone!\n',
+];
 
 const server = net.createServer((socket) => {
 
   socket.on('data', (data) => {
+    let string = data.toString();
+    console.log(string);
+    messages.push(string);
+    while (messages.length > 33) {
+      messages.shift();
+    }
     sockets.forEach((s) => {
       s.write(data);
     })
-    console.log(data);
   });
 
   socket.on('close', () => {
@@ -17,7 +25,9 @@ const server = net.createServer((socket) => {
     console.log('sockets size: ', sockets.size);
   });
 
-  socket.write('hello\n');
+  messages.forEach((message) => {
+    socket.write(message);
+  });
   sockets.add(socket);
   console.log('connect socket');
   console.log('sockets size: ', sockets.size);
@@ -25,7 +35,7 @@ const server = net.createServer((socket) => {
 
 server.on('error', (err) => {
   // Handle errors here.
-  throw err;
+  // throw err;
 });
 
 // Grab an arbitrary unused port.
