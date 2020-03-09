@@ -9,7 +9,7 @@ const server = net.createServer((socket) => {
 
   socket.on('data', (data) => {
     let string = data.toString();
-    console.log(string);
+    console.log(string.slice(0, string.length - 2));
     messages.push(string);
     while (messages.length > 33) {
       messages.shift();
